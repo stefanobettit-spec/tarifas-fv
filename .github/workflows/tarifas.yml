@@ -1,0 +1,40 @@
+# Descarga mensual de los pliegos tarifarios de CGE.
+# Corre solo el día 5 de cada mes a las 13:00 UTC (09:00–10:00 en Chile)
+# y también se puede ejecutar a mano desde la pestaña "Actions" → "Run workflow".
+name: Actualizar tarifas
+
+on:
+  schedule:
+    - cron: "0 13 5 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write   # necesario para guardar el CSV actualizado en el repositorio
+
+jobs:
+  tarifas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar librerías
+        run: pip install -r requirements.txt
+
+      - name: Actualizar tarifas
+        run: python actualizar_tarifas.py
+
+      - name: Guardar el CSV si cambió
+        if: always()
+        run: |
+          git config user.name "actualizador-tarifas"
+          git config user.email "actions@users.noreply.github.com"
+          git add datos/
+          git diff --cached --quiet || git commit -m "Tarifas CGE actualizadas $(date +%Y-%m-%d)"
+          git push
