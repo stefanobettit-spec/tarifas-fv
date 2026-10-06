@@ -12,7 +12,8 @@ Los nombres de columna son cortos y fijos (la plantilla los busca por nombre):
   SP_t1..SP_t5   (cargo por servicio público por tramo, sin IVA)
   INY_BT, INY_AT (precio de inyección, sin IVA)
 
-Todos los cargos van TAL COMO LOS PUBLICA CGE: con IVA, salvo SP_* e INY_*.
+Todos los cargos van CON IVA (como los publica CGE), salvo SP_* e INY_* que van sin IVA.
+En Frontel y Saesa la columna "sector" va vacía: su pliego se identifica por comuna y red.
 """
 
 import csv
